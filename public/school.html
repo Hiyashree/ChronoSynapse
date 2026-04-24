@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Dashboard - Timetable Titan</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="school-dashboard-page">
+    <header>
+        <a href="/dashboard" class="logo">
+            <div class="logo-icon">📅</div>
+            <span>Timetable Titan</span>
+        </a>
+        <div class="user-menu-container">
+            <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu()"></div>
+            <div class="user-menu" id="userMenu">
+                <div class="user-menu-header">
+                    <div class="user-menu-name" id="userMenuName">User</div>
+                    <div class="user-menu-email" id="userMenuEmail">user@example.com</div>
+                </div>
+                <div class="user-menu-divider"></div>
+                <div class="user-menu-item" onclick="goToDashboard()">
+                    <span class="user-menu-icon">📊</span>
+                    <span>School Dashboard</span>
+                </div>
+                <div class="user-menu-item" id="currentSchoolItem" style="display: none;">
+                    <span class="user-menu-icon">🏫</span>
+                    <span id="currentSchoolName">Current School</span>
+                </div>
+                <div class="user-menu-divider"></div>
+                <div class="user-menu-item" onclick="handleLogout()">
+                    <span class="user-menu-icon">🚪</span>
+                    <span>Log out</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav id="mainNav">
+        <button class="nav-item active" data-page="timetable">Timetable</button>
+        <button class="nav-item" data-page="teachers">Teachers</button>
+        <button class="nav-item" data-page="subjects">Subjects</button>
+        <button class="nav-item" data-page="classes">Classes & Sections</button>
+        <button class="nav-item" data-page="classrooms">Classrooms</button>
+        <button class="nav-item" data-page="timeslots">Timeslots</button>
+    </nav>
+
+    <main>
+        <div id="schoolName" style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;"></div>
+        <p class="page-subtitle" id="schoolSubtitle">Manage your school's data and generate timetables.</p>
+
+        <!-- Timetable Page -->
+        <div id="timetablePage" class="page-content">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-title">Timetable</h2>
+                    <p style="color: var(--text-gray); margin-top: 0.5rem;">Generate, view, and download the class timetable.</p>
+                </div>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <select id="classSelect" class="form-input" style="width: 250px;">
+                        <option value="">Select classes...</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="generateTimetable()">⚡ Generate Timetable</button>
+                    <button class="btn btn-secondary" onclick="downloadTimetable()">📥 CSV</button>
+                </div>
+            </div>
+
+            <div class="stats-grid" id="statsGrid">
+                <!-- Stats will be loaded here -->
+            </div>
+
+            <div id="timetableContainer">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📅</div>
+                    <p>No Timetable Generated. Select one or more classes and click the "Generate Timetable" button to create a new schedule.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teachers Page -->
+        <div id="teachersPage" class="page-content" style="display: none;">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-title">Teacher Management</h2>
+                    <p style="color: var(--text-gray); margin-top: 0.5rem;">Add, edit, or remove teachers and manage their subjects and availability.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openTeacherModal()">➕ Add Teacher</button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Qualification</th>
+                            <th>Subjects</th>
+                            <th>Contact</th>
+                            <th>Email</th>
+                            <th>Salary</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teachersTableBody">
+                        <tr><td colspan="7" style="text-align: center; padding: 2rem;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Subjects Page -->
+        <div id="subjectsPage" class="page-content" style="display: none;">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-title">Subject Management</h2>
+                    <p style="color: var(--text-gray); margin-top: 0.5rem;">Define the subjects taught in the school.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openSubjectModal()">➕ Add Subject</button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subject Name</th>
+                            <th>Subject Code</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subjectsTableBody">
+                        <tr><td colspan="3" style="text-align: center; padding: 2rem;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Classes Page -->
+        <div id="classesPage" class="page-content" style="display: none;">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-title">Class & Section Management</h2>
+                    <p style="color: var(--text-gray); margin-top: 0.5rem;">Organize classes, sections, and their specific scheduling constraints.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openClassModal()">➕ Add Class</button>
+            </div>
+
+            <div id="classesContainer">
+                <!-- Classes will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Classrooms Page -->
+        <div id="classroomsPage" class="page-content" style="display: none;">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-title">Classroom Management</h2>
+                    <p style="color: var(--text-gray); margin-top: 0.5rem;">Manage classrooms and their capacities.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openClassroomModal()">➕ Add Classroom</button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Room Number</th>
+                            <th>Capacity</th>
+                            <th>Type</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="classroomsTableBody">
+                        <tr><td colspan="4" style="text-align: center; padding: 2rem;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Timeslots Page -->
+        <div id="timeslotsPage" class="page-content" style="display: none;">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-title">Timeslot Management</h2>
+                    <p style="color: var(--text-gray); margin-top: 0.5rem;">Define the available timeslots for scheduling.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openTimeslotModal()">➕ Add Timeslot</button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Duration</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="timeslotsTableBody">
+                        <tr><td colspan="5" style="text-align: center; padding: 2rem;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Teacher Modal -->
+    <div id="teacherModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="teacherModalTitle">Add New Teacher</h3>
+                <button class="modal-close" onclick="closeTeacherModal()">&times;</button>
+            </div>
+            <form id="teacherForm">
+                <div class="two-column">
+                    <div>
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-input" name="t_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Qualification</label>
+                            <input type="text" class="form-input" name="qualification">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Contact Number</label>
+                            <input type="text" class="form-input" name="contactno">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-input" name="email">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Salary</label>
+                            <input type="number" class="form-input" name="salary" value="0">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label class="form-label">Teachable Subjects</label>
+                            <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 0.5rem;">Select the subjects this teacher is qualified to teach.</p>
+                            <div class="checkbox-group" id="teacherSubjectsCheckbox">
+                                <!-- Will be populated -->
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Unavailability</label>
+                            <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 0.5rem;">Select the timeslots when this teacher is unavailable to teach.</p>
+                            <div class="checkbox-group" id="teacherUnavailabilityCheckbox">
+                                <!-- Will be populated -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeTeacherModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Subject Modal -->
+    <div id="subjectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="subjectModalTitle">Add New Subject</h3>
+                <button class="modal-close" onclick="closeSubjectModal()">&times;</button>
+            </div>
+            <form id="subjectForm">
+                <div class="form-group">
+                    <label class="form-label">Subject Name</label>
+                    <input type="text" class="form-input" name="s_name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Subject Code</label>
+                    <input type="text" class="form-input" name="s_code">
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeSubjectModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Class Modal -->
+    <div id="classModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="classModalTitle">Add New Class</h3>
+                <button class="modal-close" onclick="closeClassModal()">&times;</button>
+            </div>
+            <form id="classForm">
+                <div class="form-group">
+                    <label class="form-label">Class Name</label>
+                    <input type="text" class="form-input" name="c_name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Class Teacher</label>
+                    <select class="form-input" name="t_id" id="classTeacherSelect">
+                        <option value="">Select a teacher...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Allowed Subjects</label>
+                    <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 0.5rem;">Select the subjects allowed for this class.</p>
+                    <div class="checkbox-group" id="classSubjectsCheckbox">
+                        <!-- Will be populated -->
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeClassModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Section Modal -->
+    <div id="sectionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="sectionModalTitle">Add New Section</h3>
+                <button class="modal-close" onclick="closeSectionModal()">&times;</button>
+            </div>
+            <form id="sectionForm">
+                <div class="form-group">
+                    <label class="form-label">Section Name</label>
+                    <input type="text" class="form-input" name="sec_name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Strength</label>
+                    <input type="number" class="form-input" name="strength" value="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Allowed Timeslots</label>
+                    <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 0.5rem;">Select allowed timeslots for this section. Leave empty to allow all.</p>
+                    <div class="checkbox-group" id="sectionTimeslotsCheckbox">
+                        <!-- Will be populated -->
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeSectionModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Classroom Modal -->
+    <div id="classroomModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="classroomModalTitle">Add New Classroom</h3>
+                <button class="modal-close" onclick="closeClassroomModal()">&times;</button>
+            </div>
+            <form id="classroomForm">
+                <div class="form-group">
+                    <label class="form-label">Room Number</label>
+                    <input type="text" class="form-input" name="room_no" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Capacity</label>
+                    <input type="number" class="form-input" name="capacity">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Type</label>
+                    <input type="text" class="form-input" name="type" placeholder="E.g., Regular, Lab, Library">
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeClassroomModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Timeslot Modal -->
+    <div id="timeslotModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="timeslotModalTitle">Add New Timeslot</h3>
+                <button class="modal-close" onclick="closeTimeslotModal()">&times;</button>
+            </div>
+            <form id="timeslotForm">
+                <div class="form-group">
+                    <label class="form-label">Day</label>
+                    <select class="form-input" name="day" required>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Start Time</label>
+                    <input type="time" class="form-input" name="start_time" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">End Time</label>
+                    <input type="time" class="form-input" name="end_time" required>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeTimeslotModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/school-dashboard.js"></script>
+</body>
+</html>
+
