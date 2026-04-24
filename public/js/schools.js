@@ -32,6 +32,7 @@ async function loadSchools() {
         // This happens when a guest creates their first school
         if (schools.length > 0 && !currentUserId && schools[0].userId) {
             currentUserId = schools[0].userId;
+            localStorage.setItem('guestId', currentUserId);
             console.log('Stored userId from loaded schools:', currentUserId);
         }
         
@@ -95,6 +96,7 @@ async function createSchool() {
         // If we got a userId from the response (guest mode), store it
         if (school.userId && !currentUserId) {
             currentUserId = school.userId;
+            localStorage.setItem('guestId', currentUserId);
             console.log('Stored guest userId:', currentUserId);
         }
 

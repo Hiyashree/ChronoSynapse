@@ -1,6 +1,18 @@
 // Common utility functions
 
-const API_BASE = '/api';
+const API_BASE = (() => {
+    const savedBase = localStorage.getItem('apiBaseUrl');
+    if (savedBase) {
+        return `${savedBase.replace(/\/$/, '')}/api`;
+    }
+
+    // GitHub Pages serves static files only, so default to local backend in that case.
+    if (window.location.hostname.endsWith('github.io')) {
+        return 'http://localhost:3000/api';
+    }
+
+    return '/api';
+})();
 
 // Get auth token from localStorage
 function getAuthToken() {
@@ -9,7 +21,7 @@ function getAuthToken() {
 
 // Get user ID from localStorage
 function getUserId() {
-    return localStorage.getItem('userId');
+    return localStorage.getItem('userId') || localStorage.getItem('guestId');
 }
 
 // Set auth token
@@ -22,6 +34,7 @@ function setAuthToken(token, userId) {
 function clearAuth() {
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
+    localStorage.removeItem('guestId');
     localStorage.removeItem('username');
     localStorage.removeItem('email');
 }
@@ -73,7 +86,11 @@ async function apiRequest(endpoint, options = {}) {
     } catch (error) {
         console.error('[API] Request failed:', error);
         if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-            throw new Error('Cannot connect to server. Make sure the backend is running on port 3000.');
+            throw new Error(
+                `Cannot connect to backend (${API_BASE}). ` +
+                'If you are using GitHub Pages, start your backend locally on http://localhost:3000 ' +
+                'or set localStorage.apiBaseUrl to your deployed backend URL.'
+            );
         }
         throw error;
     }
