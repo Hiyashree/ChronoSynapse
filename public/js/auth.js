@@ -45,6 +45,6 @@ async function signin(data) {
 
 function logout() {
     clearAuth();
-    window.location.href = '/';
+    window.location.href = 'index.html';
 }
 

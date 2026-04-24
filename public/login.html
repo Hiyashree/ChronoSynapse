@@ -8,12 +8,12 @@
 </head>
 <body>
     <header>
-        <a href="/" class="logo">
+        <a href="index.html" class="logo">
             <div class="logo-icon">📅</div>
             <span>Timetable Titan</span>
         </a>
         <div>
-            <a href="/signup" class="btn btn-secondary">Sign Up</a>
+            <a href="signup.html" class="btn btn-secondary">Sign Up</a>
         </div>
     </header>
 
@@ -37,10 +37,10 @@
                     </button>
                 </form>
                 <p style="text-align: center; margin-top: 1.5rem; color: var(--text-gray);">
-                    Don't have an account? <a href="/signup" style="color: var(--primary-purple);">Sign up</a>
+                    Don't have an account? <a href="signup.html" style="color: var(--primary-purple);">Sign up</a>
                 </p>
                 <p style="text-align: center; margin-top: 1rem;">
-                    <a href="/dashboard" style="color: var(--text-gray);">Continue as Guest →</a>
+                    <a href="dashboard.html" style="color: var(--text-gray);">Continue as Guest →</a>
                 </p>
             </div>
         </div>
@@ -59,7 +59,7 @@
 
             try {
                 await signin(data);
-                window.location.href = '/dashboard';
+                window.location.href = 'dashboard.html';
             } catch (error) {
                 showAlert(error.message, 'error');
             }

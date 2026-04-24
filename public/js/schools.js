@@ -58,7 +58,7 @@ function displaySchools(schools) {
     }
 
     container.innerHTML = schools.map(school => `
-        <div class="school-card" onclick="window.location.href='/school/${school.school_id}'">
+        <div class="school-card" onclick="window.location.href='school.html?schoolId=${school.school_id}'">
             <div class="school-icon">🏫</div>
             <div class="school-name">${school.school_name}</div>
             <div class="school-date">Created on ${formatDate(school.created_at)}</div>

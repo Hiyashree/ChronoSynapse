@@ -134,6 +134,9 @@ function getUrlParam(name) {
 
 // Get path parameter (e.g., /school/:id)
 function getPathParam() {
+    const schoolId = getUrlParam('schoolId');
+    if (schoolId) return schoolId;
+
     const path = window.location.pathname;
     const parts = path.split('/');
     return parts[parts.length - 1];

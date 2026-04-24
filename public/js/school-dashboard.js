@@ -14,7 +14,7 @@ let timetable = [];
 async function initDashboard() {
     currentSchoolId = getPathParam();
     if (!currentSchoolId) {
-        window.location.href = '/dashboard';
+        window.location.href = 'dashboard.html';
         return;
     }
 
@@ -1428,13 +1428,13 @@ function setupUserMenu() {
 }
 
 function goToDashboard() {
-    window.location.href = '/dashboard';
+    window.location.href = 'dashboard.html';
 }
 
 function handleLogout() {
     if (confirm('Are you sure you want to logout?')) {
         clearAuth();
-        window.location.href = '/';
+        window.location.href = 'index.html';
     }
 }
 
