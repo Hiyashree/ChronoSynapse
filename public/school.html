@@ -3,14 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Dashboard - Timetable Titan</title>
+    <title>School Dashboard - ChronoSynapse</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/fx.css">
 </head>
-<body class="school-dashboard-page">
-    <header>
+<body class="app-page">
+    <div class="app-bg">
+        <div class="fx-shimmer"></div>
+        <div class="fx-mist"></div>
+        <div class="fx-bokeh"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="fx-hearts"><span>♥</span><span>♥</span><span>♥</span><span>♥</span><span>♥</span><span>♥</span><span>♥</span><span>♥</span></div>
+        <div class="fx-petals"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="fx-butterflies"><span class="fx-butterfly"></span><span class="fx-butterfly"></span><span class="fx-butterfly"></span></div>
+        <div class="fx-glitter"><span>✦</span><span>✨</span><span>♡</span><span>✦</span><span>✨</span><span>✦</span><span>✨</span><span>♡</span><span>✦</span><span>✨</span></div>
+        <div class="app-waves"></div>
+        <div class="app-beams"></div>
+        <div class="app-ripples"><span></span><span></span><span></span></div>
+        <div class="app-streams">
+            <div class="app-stream"></div><div class="app-stream"></div><div class="app-stream"></div>
+            <div class="app-stream"></div><div class="app-stream"></div>
+        </div>
+        <div class="app-synapse">
+            <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+                <line class="app-synapse-line" x1="100" y1="200" x2="350" y2="350"/>
+                <line class="app-synapse-line" x1="350" y1="350" x2="600" y2="180"/>
+                <line class="app-synapse-line" x1="600" y1="180" x2="850" y2="400"/>
+                <line class="app-synapse-line" x1="850" y1="400" x2="1100" y2="250"/>
+                <line class="app-synapse-line" x1="200" y1="500" x2="450" y2="600"/>
+                <line class="app-synapse-line" x1="450" y1="600" x2="700" y2="450"/>
+                <line class="app-synapse-line" x1="700" y1="450" x2="950" y2="650"/>
+                <line class="app-synapse-line" x1="350" y1="350" x2="450" y2="600"/>
+                <line class="app-synapse-line" x1="600" y1="180" x2="700" y2="450"/>
+                <line class="app-synapse-line" x1="100" y1="200" x2="200" y2="500"/>
+                <circle class="app-synapse-node" cx="100" cy="200" r="4"/>
+                <circle class="app-synapse-node" cx="350" cy="350" r="4"/>
+                <circle class="app-synapse-node" cx="600" cy="180" r="4"/>
+                <circle class="app-synapse-node" cx="850" cy="400" r="4"/>
+                <circle class="app-synapse-node" cx="1100" cy="250" r="4"/>
+                <circle class="app-synapse-node" cx="200" cy="500" r="4"/>
+                <circle class="app-synapse-node" cx="450" cy="600" r="4"/>
+                <circle class="app-synapse-node" cx="700" cy="450" r="4"/>
+                <circle class="app-synapse-node" cx="950" cy="650" r="4"/>
+            </svg>
+        </div>
+        <div class="app-time-fragments">
+            <span>08:00</span><span>Math · R101</span><span>Wed 10:00</span><span>Science</span>
+            <span>09:30</span><span>History</span><span>Mon 14:00</span><span>English · R205</span>
+        </div>
+    </div>
+
+    <header class="app-header">
         <a href="dashboard.html" class="logo">
             <div class="logo-icon">📅</div>
-            <span>Timetable Titan</span>
+            <span>ChronoSynapse</span>
         </a>
         <div class="user-menu-container">
             <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu()"></div>
@@ -37,7 +86,7 @@
         </div>
     </header>
 
-    <nav id="mainNav">
+    <nav id="mainNav" class="app-nav">
         <button class="nav-item active" data-page="timetable">Timetable</button>
         <button class="nav-item" data-page="teachers">Teachers</button>
         <button class="nav-item" data-page="subjects">Subjects</button>
@@ -46,29 +95,50 @@
         <button class="nav-item" data-page="timeslots">Timeslots</button>
     </nav>
 
-    <main>
-        <div id="schoolName" style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;"></div>
+    <main class="app-main">
+        <div class="app-hero-strip">
+            <span class="app-hero-badge">✦ TIMETABLE ENGINE</span>
+        </div>
+        <div id="schoolName" class="school-title-display" style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;"></div>
         <p class="page-subtitle" id="schoolSubtitle">Manage your school's data and generate timetables.</p>
+
+        <!-- Live clock bar (visible on all tabs) -->
+        <div class="live-clock-bar" id="liveClockBar">
+            <div class="live-clock-time" id="liveClockTime">--:--</div>
+            <div class="live-clock-meta">
+                <span id="liveClockDate">Loading...</span>
+                <span class="live-clock-dot">•</span>
+                <span id="liveClockDay" class="live-clock-day">Monday</span>
+            </div>
+        </div>
 
         <!-- Timetable Page -->
         <div id="timetablePage" class="page-content">
             <div class="card-header">
                 <div>
                     <h2 class="card-title">Timetable</h2>
-                    <p style="color: var(--text-gray); margin-top: 0.5rem;">Generate, view, and download the class timetable.</p>
+                    <p class="card-desc" style="margin-top: 0.5rem;">Generate, view, and download the class timetable.</p>
                 </div>
-                <div style="display: flex; gap: 1rem; align-items: center;">
+                <div class="app-toolbar">
                     <select id="classSelect" class="form-input" style="width: 250px;">
                         <option value="">Select classes...</option>
                     </select>
-                    <button class="btn btn-primary" onclick="generateTimetable()">⚡ Generate Timetable</button>
+                    <button class="btn btn-primary" onclick="generateTimetable()">⚡ Generate</button>
                     <button class="btn btn-secondary" onclick="downloadTimetable()">📥 CSV</button>
+                    <button class="btn btn-secondary" onclick="printTimetable()">🖨️ Print</button>
+                    <button class="btn btn-secondary" onclick="clearTimetable()" title="Remove all generated entries">🗑️ Clear</button>
                 </div>
             </div>
 
-            <div class="stats-grid" id="statsGrid">
-                <!-- Stats will be loaded here -->
+            <!-- Smart dashboard widgets -->
+            <div class="timetable-widgets" id="timetableWidgets">
+                <div class="widget-card widget-readiness" id="setupReadiness"></div>
+                <div class="widget-card widget-today" id="todaySchedule"></div>
+                <div class="widget-card widget-insights" id="timetableInsights"></div>
+                <div class="widget-card widget-actions" id="quickActions"></div>
             </div>
+
+            <div class="stats-grid" id="statsGrid"></div>
 
             <div id="timetableContainer">
                 <div class="empty-state">
@@ -83,7 +153,7 @@
             <div class="card-header">
                 <div>
                     <h2 class="card-title">Teacher Management</h2>
-                    <p style="color: var(--text-gray); margin-top: 0.5rem;">Add, edit, or remove teachers and manage their subjects and availability.</p>
+                    <p class="card-desc" style="margin-top: 0.5rem;">Add, edit, or remove teachers and manage their subjects and availability.</p>
                 </div>
                 <button class="btn btn-primary" onclick="openTeacherModal()">➕ Add Teacher</button>
             </div>
@@ -113,7 +183,7 @@
             <div class="card-header">
                 <div>
                     <h2 class="card-title">Subject Management</h2>
-                    <p style="color: var(--text-gray); margin-top: 0.5rem;">Define the subjects taught in the school.</p>
+                    <p class="card-desc" style="margin-top: 0.5rem;">Define the subjects taught in the school.</p>
                 </div>
                 <button class="btn btn-primary" onclick="openSubjectModal()">➕ Add Subject</button>
             </div>
@@ -139,7 +209,7 @@
             <div class="card-header">
                 <div>
                     <h2 class="card-title">Class & Section Management</h2>
-                    <p style="color: var(--text-gray); margin-top: 0.5rem;">Organize classes, sections, and their specific scheduling constraints.</p>
+                    <p class="card-desc" style="margin-top: 0.5rem;">Organize classes, sections, and their specific scheduling constraints.</p>
                 </div>
                 <button class="btn btn-primary" onclick="openClassModal()">➕ Add Class</button>
             </div>
@@ -154,7 +224,7 @@
             <div class="card-header">
                 <div>
                     <h2 class="card-title">Classroom Management</h2>
-                    <p style="color: var(--text-gray); margin-top: 0.5rem;">Manage classrooms and their capacities.</p>
+                    <p class="card-desc" style="margin-top: 0.5rem;">Manage classrooms and their capacities.</p>
                 </div>
                 <button class="btn btn-primary" onclick="openClassroomModal()">➕ Add Classroom</button>
             </div>
@@ -181,7 +251,7 @@
             <div class="card-header">
                 <div>
                     <h2 class="card-title">Timeslot Management</h2>
-                    <p style="color: var(--text-gray); margin-top: 0.5rem;">Define the available timeslots for scheduling.</p>
+                    <p class="card-desc" style="margin-top: 0.5rem;">Define the available timeslots for scheduling.</p>
                 </div>
                 <button class="btn btn-primary" onclick="openTimeslotModal()">➕ Add Timeslot</button>
             </div>
@@ -239,14 +309,14 @@
                     <div>
                         <div class="form-group">
                             <label class="form-label">Teachable Subjects</label>
-                            <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 0.5rem;">Select the subjects this teacher is qualified to teach.</p>
+                            <p class="form-hint">Select the subjects this teacher is qualified to teach.</p>
                             <div class="checkbox-group" id="teacherSubjectsCheckbox">
                                 <!-- Will be populated -->
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Unavailability</label>
-                            <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 0.5rem;">Select the timeslots when this teacher is unavailable to teach.</p>
+                            <p class="form-hint">Select the timeslots when this teacher is unavailable to teach.</p>
                             <div class="checkbox-group" id="teacherUnavailabilityCheckbox">
                                 <!-- Will be populated -->
                             </div>
@@ -305,7 +375,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Allowed Subjects</label>
-                    <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 0.5rem;">Select the subjects allowed for this class.</p>
+                    <p class="form-hint">Select the subjects allowed for this class.</p>
                     <div class="checkbox-group" id="classSubjectsCheckbox">
                         <!-- Will be populated -->
                     </div>
@@ -336,7 +406,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Allowed Timeslots</label>
-                    <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 0.5rem;">Select allowed timeslots for this section. Leave empty to allow all.</p>
+                    <p class="form-hint">Select allowed timeslots for this section. Leave empty to allow all.</p>
                     <div class="checkbox-group" id="sectionTimeslotsCheckbox">
                         <!-- Will be populated -->
                     </div>

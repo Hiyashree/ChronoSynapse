@@ -144,7 +144,9 @@ const updateTeacher = async (req, res) => {
         // Update subjects
         await pool.execute('DELETE FROM teacher_subjects WHERE t_id = ?', [teacherId]);
         if (subjects && Array.isArray(subjects)) {
-            for (const sId of subjects) {
+            for (const subject of subjects) {
+                const sId = typeof subject === 'object' ? subject.s_id : subject;
+                if (sId == null) continue;
                 await pool.execute(
                     'INSERT INTO teacher_subjects (t_id, s_id) VALUES (?, ?)',
                     [teacherId, sId]

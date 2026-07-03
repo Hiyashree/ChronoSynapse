@@ -1,16 +1,21 @@
 // Common utility functions
 
 const API_BASE = (() => {
+    if (window.CHRONOSYNAPSE_API_URL) {
+        return `${window.CHRONOSYNAPSE_API_URL.replace(/\/$/, '')}/api`;
+    }
+
     const savedBase = localStorage.getItem('apiBaseUrl');
     if (savedBase) {
         return `${savedBase.replace(/\/$/, '')}/api`;
     }
 
-    // GitHub Pages serves static files only, so default to local backend in that case.
-    if (window.location.hostname.endsWith('github.io')) {
-        return 'http://localhost:3000/api';
+    const metaApi = document.querySelector('meta[name="api-base-url"]')?.content?.trim();
+    if (metaApi) {
+        return `${metaApi.replace(/\/$/, '')}/api`;
     }
 
+    // Same Render deployment serves frontend + API from one URL
     return '/api';
 })();
 
@@ -88,8 +93,7 @@ async function apiRequest(endpoint, options = {}) {
         if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
             throw new Error(
                 `Cannot connect to backend (${API_BASE}). ` +
-                'If you are using GitHub Pages, start your backend locally on http://localhost:3000 ' +
-                'or set localStorage.apiBaseUrl to your deployed backend URL.'
+                'Make sure the server is running, or set meta[name="api-base-url"] to your deployed backend URL.'
             );
         }
         throw error;

@@ -9,6 +9,27 @@ let sections = [];
 let classrooms = [];
 let timeslots = [];
 let timetable = [];
+let lastStats = {};
+
+const SETUP_CHECKS = [
+    { key: 'teachers', label: 'Add teachers', icon: '👥', page: 'teachers', min: 1 },
+    { key: 'subjects', label: 'Define subjects', icon: '📚', page: 'subjects', min: 1 },
+    { key: 'classes', label: 'Create classes', icon: '🏫', page: 'classes', min: 1 },
+    { key: 'sections', label: 'Add sections', icon: '📋', page: 'classes', min: 1 },
+    { key: 'classrooms', label: 'Set up rooms', icon: '🏛️', page: 'classrooms', min: 1 },
+    { key: 'timeslots', label: 'Configure timeslots', icon: '⏰', page: 'timeslots', min: 1 }
+];
+
+const SUBJECT_PALETTE = [
+    { class: 'tt-accent-rose',    label: 'Rose' },
+    { class: 'tt-accent-violet',  label: 'Violet' },
+    { class: 'tt-accent-indigo',  label: 'Indigo' },
+    { class: 'tt-accent-fuchsia', label: 'Fuchsia' },
+    { class: 'tt-accent-plum',    label: 'Plum' },
+    { class: 'tt-accent-mauve',   label: 'Mauve' },
+    { class: 'tt-accent-lilac',   label: 'Lilac' },
+    { class: 'tt-accent-blush',   label: 'Blush' }
+];
 
 // Initialize dashboard
 async function initDashboard() {
@@ -32,6 +53,9 @@ async function initDashboard() {
 
     // Load initial data
     await loadAllData();
+
+    // Live clock
+    initLiveClock();
 
     // Load timetable page by default
     showPage('timetable');
@@ -165,28 +189,302 @@ async function loadAllData() {
 // ========== TIMETABLE PAGE ==========
 
 async function loadTimetablePage() {
-    // Load statistics
     try {
         const stats = await apiRequest(`/timetable/${currentSchoolId}/stats`);
+        lastStats = stats;
         displayStats(stats);
-        // Show stats panel initially
-        const statsGrid = document.getElementById('statsGrid');
-        if (statsGrid) {
-            statsGrid.style.display = 'grid';
-        }
+        refreshTimetableWidgets(stats);
     } catch (error) {
         console.error('Error loading stats:', error);
     }
 
-    // Load classes for dropdown
     await loadClassesForTimetable();
-
-    // Load existing timetable
     await loadTimetable();
+}
+
+function buildSubjectColorMap(subjectNames) {
+    const sorted = [...subjectNames].sort((a, b) => a.localeCompare(b));
+    const map = {};
+    sorted.forEach((name, i) => {
+        map[name] = SUBJECT_PALETTE[i % SUBJECT_PALETTE.length];
+    });
+    return map;
+}
+
+function getSubjectColor(subjectName, colorMap) {
+    if (colorMap && colorMap[subjectName]) {
+        return colorMap[subjectName];
+    }
+    let hash = 0;
+    for (let i = 0; i < subjectName.length; i++) {
+        hash = subjectName.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return SUBJECT_PALETTE[Math.abs(hash) % SUBJECT_PALETTE.length];
+}
+
+function getSetupProgress(stats) {
+    const checks = SETUP_CHECKS.map(c => ({
+        ...c,
+        count: stats[c.key] || 0,
+        done: (stats[c.key] || 0) >= c.min
+    }));
+    const doneCount = checks.filter(c => c.done).length;
+    return {
+        checks,
+        percent: Math.round((doneCount / checks.length) * 100),
+        ready: doneCount === checks.length
+    };
+}
+
+function refreshTimetableWidgets(stats) {
+    renderSetupReadiness(stats);
+    renderTodaySchedule();
+    renderTimetableInsights();
+    renderQuickActions(stats);
+}
+
+function renderSetupReadiness(stats) {
+    const el = document.getElementById('setupReadiness');
+    if (!el) return;
+
+    const { checks, percent, ready } = getSetupProgress(stats);
+    const circumference = 2 * Math.PI * 36;
+    const offset = circumference - (percent / 100) * circumference;
+
+    el.innerHTML = `
+        <div class="widget-header">
+            <span class="widget-icon">🎯</span>
+            <h3>Setup Readiness</h3>
+        </div>
+        <div class="readiness-body">
+            <div class="readiness-ring">
+                <svg viewBox="0 0 80 80">
+                    <circle class="readiness-ring-bg" cx="40" cy="40" r="36"/>
+                    <circle class="readiness-ring-fill" cx="40" cy="40" r="36"
+                        stroke-dasharray="${circumference}"
+                        stroke-dashoffset="${offset}"/>
+                </svg>
+                <span class="readiness-percent">${percent}%</span>
+            </div>
+            <div class="readiness-details">
+                <p class="readiness-status ${ready ? 'ready' : 'pending'}">
+                    ${ready ? '✓ Ready to generate!' : `${checks.filter(c => !c.done).length} step(s) remaining`}
+                </p>
+                <ul class="readiness-checklist">
+                    ${checks.map(c => `
+                        <li class="${c.done ? 'done' : 'pending'}" onclick="showPage('${c.page}')" title="Go to ${c.label}">
+                            <span class="check-icon">${c.done ? '✓' : c.icon}</span>
+                            <span>${c.label}</span>
+                            <span class="check-count">${c.count}</span>
+                        </li>
+                    `).join('')}
+                </ul>
+            </div>
+        </div>
+    `;
+}
+
+function renderTodaySchedule() {
+    const el = document.getElementById('todaySchedule');
+    if (!el) return;
+
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const today = days[new Date().getDay()];
+    const now = new Date();
+    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+    const todayEntries = timetable
+        .filter(e => e.day === today)
+        .sort((a, b) => a.start_time.localeCompare(b.start_time));
+
+    let content = '';
+    if (todayEntries.length === 0) {
+        content = `
+            <p class="widget-empty">${timetable.length === 0 ? 'Generate a timetable to see today\'s schedule.' : `No classes scheduled for ${today}.`}</p>
+        `;
+    } else {
+        const upcoming = todayEntries.find(e => {
+            const [h, m] = e.end_time.split(':').map(Number);
+            return h * 60 + m > nowMinutes;
+        });
+
+        content = `
+            <div class="today-highlight ${upcoming ? 'active' : 'done'}">
+                ${upcoming
+                    ? `<span class="today-now">Up next</span>
+                       <strong>${formatTime(upcoming.start_time)} – ${upcoming.s_name}</strong>
+                       <small>${upcoming.t_name} · Room ${upcoming.room_no} · Class ${upcoming.c_name}-${upcoming.sec_name}</small>`
+                    : `<span class="today-now">All done!</span>
+                       <strong>No more classes today</strong>
+                       <small>${todayEntries.length} period(s) completed</small>`
+                }
+            </div>
+            <ul class="today-list">
+                ${todayEntries.slice(0, 5).map(e => {
+                    const [eh, em] = e.end_time.split(':').map(Number);
+                    const past = eh * 60 + em <= nowMinutes;
+                    return `
+                        <li class="${past ? 'past' : ''}">
+                            <span class="today-time">${formatTime(e.start_time)}</span>
+                            <span class="today-subject">${e.s_name}</span>
+                            <span class="today-room">${e.room_no}</span>
+                        </li>
+                    `;
+                }).join('')}
+            </ul>
+            ${todayEntries.length > 5 ? `<p class="widget-more">+${todayEntries.length - 5} more periods</p>` : ''}
+        `;
+    }
+
+    el.innerHTML = `
+        <div class="widget-header">
+            <span class="widget-icon">📆</span>
+            <h3>Today · ${today}</h3>
+        </div>
+        ${content}
+    `;
+}
+
+function renderTimetableInsights() {
+    const el = document.getElementById('timetableInsights');
+    if (!el) return;
+
+    const lastGen = localStorage.getItem(`lastGenerated_${currentSchoolId}`);
+    const sections = new Set(timetable.map(e => `${e.c_name}-${e.sec_name}`)).size;
+    const subjectsUsed = new Set(timetable.map(e => e.s_name)).size;
+    const teachersUsed = new Set(timetable.map(e => e.t_name)).size;
+    const totalSlots = timeslots.length * 5;
+    const fillRate = totalSlots > 0 ? Math.min(100, Math.round((timetable.length / totalSlots) * 100)) : 0;
+
+    el.innerHTML = `
+        <div class="widget-header">
+            <span class="widget-icon">📊</span>
+            <h3>Timetable Insights</h3>
+        </div>
+        <div class="insights-grid">
+            <div class="insight-item">
+                <span class="insight-value">${timetable.length}</span>
+                <span class="insight-label">Entries</span>
+            </div>
+            <div class="insight-item">
+                <span class="insight-value">${sections}</span>
+                <span class="insight-label">Sections</span>
+            </div>
+            <div class="insight-item">
+                <span class="insight-value">${subjectsUsed}</span>
+                <span class="insight-label">Subjects</span>
+            </div>
+            <div class="insight-item">
+                <span class="insight-value">${teachersUsed}</span>
+                <span class="insight-label">Teachers</span>
+            </div>
+        </div>
+        <div class="insight-fill">
+            <div class="insight-fill-header">
+                <span>Schedule coverage</span>
+                <span>${fillRate}%</span>
+            </div>
+            <div class="insight-fill-bar">
+                <div class="insight-fill-progress" style="width: ${fillRate}%"></div>
+            </div>
+        </div>
+        ${lastGen ? `<p class="insight-meta">Last generated: ${formatDate(lastGen)}</p>` : '<p class="insight-meta">Not generated yet</p>'}
+    `;
+}
+
+function renderQuickActions(stats) {
+    const el = document.getElementById('quickActions');
+    if (!el) return;
+
+    const { ready } = getSetupProgress(stats);
+
+    el.innerHTML = `
+        <div class="widget-header">
+            <span class="widget-icon">⚡</span>
+            <h3>Quick Actions</h3>
+        </div>
+        <div class="quick-actions-grid">
+            <button class="quick-action-btn" onclick="quickGenerateAll()" ${!ready ? 'title="Complete setup first"' : ''}>
+                <span>⚡</span> Generate All
+            </button>
+            <button class="quick-action-btn" onclick="showPage('teachers'); setTimeout(openTeacherModal, 200)">
+                <span>👥</span> Add Teacher
+            </button>
+            <button class="quick-action-btn" onclick="showPage('timeslots')">
+                <span>⏰</span> Timeslots
+            </button>
+            <button class="quick-action-btn" onclick="downloadTimetable()">
+                <span>📥</span> Export CSV
+            </button>
+            <button class="quick-action-btn" onclick="printTimetable()">
+                <span>🖨️</span> Print View
+            </button>
+            <button class="quick-action-btn" onclick="showAllSections()">
+                <span>👁️</span> View All
+            </button>
+        </div>
+        ${!ready ? '<p class="widget-tip">💡 Complete the setup checklist before generating.</p>' : ''}
+    `;
+}
+
+function quickGenerateAll() {
+    const select = document.getElementById('classSelect');
+    if (select) {
+        select.value = 'all';
+        generateTimetable();
+    }
+}
+
+function initLiveClock() {
+    const update = () => {
+        const now = new Date();
+        const timeEl = document.getElementById('liveClockTime');
+        const dateEl = document.getElementById('liveClockDate');
+        const dayEl = document.getElementById('liveClockDay');
+        if (!timeEl) return;
+
+        timeEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        dateEl.textContent = now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+        dayEl.textContent = now.toLocaleDateString([], { year: 'numeric' });
+    };
+    update();
+    setInterval(update, 1000);
+}
+
+function printTimetable() {
+    if (timetable.length === 0) {
+        showAlert('Generate a timetable first to print', 'error');
+        return;
+    }
+    document.body.classList.add('printing-timetable');
+    window.print();
+    setTimeout(() => document.body.classList.remove('printing-timetable'), 500);
+}
+
+async function clearTimetable() {
+    if (timetable.length === 0) {
+        showAlert('No timetable to clear', 'error');
+        return;
+    }
+    if (!confirm('Remove all generated timetable entries for this school?')) return;
+
+    try {
+        await apiRequest(`/timetable/${currentSchoolId}`, { method: 'DELETE' });
+        timetable = [];
+        localStorage.removeItem(`lastGenerated_${currentSchoolId}`);
+        displayTimetable();
+        renderTodaySchedule();
+        renderTimetableInsights();
+        showAlert('Timetable cleared successfully', 'success');
+    } catch (error) {
+        showAlert(error.message || 'Failed to clear timetable', 'error');
+    }
 }
 
 function displayStats(stats) {
     const grid = document.getElementById('statsGrid');
+    if (!grid) return;
+    grid.style.display = 'none';
     grid.innerHTML = `
         <div class="stat-card">
             <div class="stat-value">${stats.teachers || 0}</div>
@@ -297,17 +595,16 @@ async function loadTimetable() {
 function displayTimetable() {
     const container = document.getElementById('timetableContainer');
 
-    // Hide stats panel
-    const statsGrid = document.getElementById('statsGrid');
-    if (statsGrid) {
-        statsGrid.style.display = 'none';
-    }
+    renderTodaySchedule();
+    renderTimetableInsights();
 
     if (timetable.length === 0) {
         container.innerHTML = `
-            <div class="empty-state">
+            <div class="empty-state empty-state-rich">
                 <div class="empty-state-icon">📅</div>
-                <p>No Timetable Generated. Select one or more classes and click the "Generate Timetable" button to create a new schedule.</p>
+                <h3>No Timetable Yet</h3>
+                <p>Select a class and hit <strong>Generate</strong>, or use the quick action below.</p>
+                <button class="btn btn-primary" onclick="quickGenerateAll()" style="margin-top: 1rem;">⚡ Generate for All Classes</button>
             </div>
         `;
         return;
@@ -356,6 +653,8 @@ function displayTimetable() {
     });
 
     const sections = Object.values(bySection);
+    const subjectColorMap = buildSubjectColorMap([...new Set(timetable.map(e => e.s_name))]);
+    const todayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
     
     // Create section buttons
     let sectionButtonsHTML = '';
@@ -393,49 +692,42 @@ function displayTimetable() {
 
         return `
             <div class="card section-timetable" data-section="${sectionKey}" style="margin-bottom: 2rem;">
-                <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem;">Timetable for Class ${className} - Section ${sectionName}</h3>
-                <div class="table-container" style="overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse;">
+                <h3 class="tt-section-title">Timetable for Class ${className} — Section ${sectionName}</h3>
+                <div class="table-container tt-table-wrap">
+                    <table class="tt-table">
                         <thead>
                             <tr>
-                                <th style="padding: 1rem; background: var(--input-bg); border: 1px solid var(--card-border);">Time</th>
+                                <th class="tt-col-time">Time</th>
                                 ${days.map(day => `
-                                    <th style="padding: 1rem; background: var(--input-bg); border: 1px solid var(--card-border); text-align: center;">${day}</th>
+                                    <th class="${day === todayName ? 'tt-col-today' : ''}">${day}</th>
                                 `).join('')}
                             </tr>
                         </thead>
                         <tbody>
-                            ${timeSlots.map((ts, tsIndex) => {
+                            ${timeSlots.map((ts) => {
                                 const timeKey = `${ts.start}-${ts.end}`;
-                                // Check if this is lunch time (12:00-13:00)
                                 const isLunch = (ts.start === '12:00:00' || ts.start.startsWith('12:')) && 
                                                (ts.end === '13:00:00' || ts.end.startsWith('13:'));
                                 
                                 return `
                                     <tr>
-                                        <td style="padding: 1rem; background: var(--input-bg); border: 1px solid var(--card-border); font-weight: 600;">
-                                            ${formatTime(ts.start)} - ${formatTime(ts.end)}
-                                        </td>
+                                        <td class="tt-time">${formatTime(ts.start)} – ${formatTime(ts.end)}</td>
                                         ${isLunch ? `
-                                            <td colspan="${days.length}" style="padding: 1.5rem; background: linear-gradient(135deg, #ec4899, #f472b6); border: 1px solid var(--card-border); text-align: center; color: white; font-weight: 600;">
-                                                🍽️ Lunch Break
-                                            </td>
+                                            <td colspan="${days.length}" class="tt-lunch">🍽️ Lunch Break</td>
                                         ` : days.map(day => {
                                             const entry = grid[timeKey]?.[day];
+                                            const isToday = day === todayName;
                                             if (entry) {
+                                                const color = getSubjectColor(entry.s_name, subjectColorMap);
                                                 return `
-                                                    <td style="padding: 1rem; background: var(--primary-purple); border: 1px solid var(--card-border); color: white; min-width: 150px;">
-                                                        <div style="font-weight: bold; margin-bottom: 0.5rem;">${entry.s_name}</div>
-                                                        <div style="font-size: 0.85rem; opacity: 0.9; margin-bottom: 0.25rem;">${entry.t_name}</div>
-                                                        <div style="font-size: 0.75rem; opacity: 0.8;">Room: ${entry.room_no}</div>
+                                                    <td class="tt-cell ${color.class}${isToday ? ' tt-cell-today' : ''}">
+                                                        <div class="tt-cell-subject">${entry.s_name}</div>
+                                                        <div class="tt-cell-teacher">${entry.t_name}</div>
+                                                        <div class="tt-cell-room">Room ${entry.room_no}</div>
                                                     </td>
                                                 `;
                                             }
-                                            return `
-                                                <td style="padding: 1rem; background: var(--card-bg); border: 1px solid var(--card-border); text-align: center; color: var(--text-gray);">
-                                                    -
-                                                </td>
-                                            `;
+                                            return `<td class="tt-empty${isToday ? ' tt-cell-today' : ''}">—</td>`;
                                         }).join('')}
                                     </tr>
                                 `;
@@ -447,7 +739,21 @@ function displayTimetable() {
         `;
     }).join('');
 
-    container.innerHTML = sectionButtonsHTML + sectionsHTML;
+    // Subject color legend
+    const uniqueSubjects = [...new Set(timetable.map(e => e.s_name))];
+    const legendHTML = uniqueSubjects.length > 0 ? `
+        <div class="subject-legend card">
+            <h4 class="subject-legend-title">Subject Legend</h4>
+            <div class="subject-legend-items">
+                ${uniqueSubjects.sort().map(name => {
+                    const c = getSubjectColor(name, subjectColorMap);
+                    return `<span class="subject-legend-item"><i class="${c.class}"></i>${name}</span>`;
+                }).join('')}
+            </div>
+        </div>
+    ` : '';
+
+    container.innerHTML = sectionButtonsHTML + sectionsHTML + legendHTML;
     
     // If multiple sections, show only the first one initially
     if (sections.length > 1 && firstSectionKey) {
@@ -490,8 +796,14 @@ function showSection(sectionKey) {
 
 // Function to show all sections
 function showAllSections() {
+    const sections = document.querySelectorAll('.section-timetable');
+    if (sections.length === 0) {
+        showAlert('Generate a timetable first to view sections', 'error');
+        return;
+    }
+
     // Show all sections
-    document.querySelectorAll('.section-timetable').forEach(section => {
+    sections.forEach(section => {
         section.style.display = 'block';
     });
     
@@ -516,12 +828,6 @@ async function generateTimetable() {
     if (!selectedValue || selectedValue === '') {
         showAlert('Please select a class or section', 'error');
         return;
-    }
-
-    // Hide stats panel
-    const statsGrid = document.getElementById('statsGrid');
-    if (statsGrid) {
-        statsGrid.style.display = 'none';
     }
 
     // Process selection: convert to section IDs
@@ -551,10 +857,6 @@ async function generateTimetable() {
 
     if (sectionIds.length === 0) {
         showAlert('No sections found to generate timetable for', 'error');
-        // Show stats panel again if error
-        if (statsGrid) {
-            statsGrid.style.display = 'grid';
-        }
         return;
     }
 
@@ -571,6 +873,7 @@ async function generateTimetable() {
         console.log('Generation result:', result);
         
         if (result.generated > 0) {
+            localStorage.setItem(`lastGenerated_${currentSchoolId}`, new Date().toISOString());
             showAlert(`Timetable generated successfully! ${result.generated} entries created.`, 'success');
         } else {
             showAlert('Timetable generation completed but no entries were created. Check if teachers, subjects, and timeslots are properly configured.', 'error');
@@ -584,15 +887,11 @@ async function generateTimetable() {
         // Reload data and timetable
         await loadAllData();
         await loadTimetable();
+        if (lastStats) refreshTimetableWidgets(lastStats);
     } catch (error) {
         console.error('Generate timetable error:', error);
         showAlert(error.message || 'Failed to generate timetable. Check console for details.', 'error');
-        // Still try to load existing timetable
         await loadTimetable();
-        // Show stats panel again if error
-        if (statsGrid) {
-            statsGrid.style.display = 'grid';
-        }
     }
 }
 

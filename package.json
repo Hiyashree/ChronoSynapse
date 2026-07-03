@@ -1,0 +1,14 @@
+{
+  "name": "chronosynapse",
+  "version": "1.0.0",
+  "description": "ChronoSynapse - School timetable scheduling system",
+  "private": true,
+  "scripts": {
+    "start": "npm start --prefix backend",
+    "dev": "npm run dev --prefix backend",
+    "verify": "node backend/demo-verify.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

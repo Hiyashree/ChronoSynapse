@@ -72,7 +72,7 @@ function displaySchools(schools) {
 
 // Create school
 async function createSchool() {
-    const nameInput = document.getElementById('schoolName');
+    const nameInput = document.getElementById('newSchoolName');
     const schoolName = nameInput?.value.trim();
 
     if (!schoolName) {

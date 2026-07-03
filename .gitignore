@@ -1,10 +1,10 @@
 # Dependencies
 node_modules/
-package-lock.json
 
-# Environment variables
+# Environment variables (never commit secrets)
 .env
 .env.local
+.env.production
 
 # Logs
 *.log
@@ -24,6 +24,9 @@ Thumbs.db
 dist/
 build/
 
-# Database
-*.sql.backup
+# Local SQLite database files
+backend/data/*.db
+backend/data/*.db-*
 
+# Backups
+*.sql.backup

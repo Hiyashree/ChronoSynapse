@@ -3,40 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timetable Titan - Effortlessly Generate School Schedules</title>
+    <title>ChronoSynapse - School Timetable Scheduling</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/landing.css">
+    <link rel="stylesheet" href="css/fx.css">
 </head>
-<body>
-    <div class="landing-hero">
-        <header style="position: absolute; top: 0; left: 0; right: 0; background: transparent; border: none;">
-            <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 2rem;">
-                <a href="index.html" class="logo">
-                    <div class="logo-icon">📅</div>
-                    <span>Timetable Titan</span>
-                </a>
-                <div style="display: flex; gap: 1rem;">
-                    <a href="login.html" class="btn btn-secondary">Sign In</a>
-                    <a href="signup.html" class="btn btn-primary">Sign Up</a>
+<body class="landing-page">
+    <div class="landing-bg">
+        <div class="fx-shimmer"></div>
+        <div class="fx-mist"></div>
+        <div class="fx-bokeh"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="fx-hearts"><span>♥</span><span>♥</span><span>♥</span><span>♥</span><span>♥</span><span>♥</span><span>♥</span><span>♥</span></div>
+        <div class="fx-petals"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="fx-butterflies"><span class="fx-butterfly"></span><span class="fx-butterfly"></span><span class="fx-butterfly"></span></div>
+        <div class="fx-glitter"><span>✦</span><span>✨</span><span>♡</span><span>✦</span><span>✨</span><span>✦</span><span>✨</span><span>♡</span><span>✦</span><span>✨</span></div>
+        <div class="landing-aurora"></div>
+        <div class="landing-orb landing-orb-1"></div>
+        <div class="landing-orb landing-orb-2"></div>
+        <div class="landing-orb landing-orb-3"></div>
+        <div class="landing-grid"></div>
+        <div class="landing-ring landing-ring-1"></div>
+        <div class="landing-ring landing-ring-2"></div>
+        <div class="landing-ring landing-ring-3"></div>
+        <div class="landing-particles">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="landing-float landing-float-calendar">📅</div>
+        <div class="landing-float landing-float-clock">🕐</div>
+        <div class="landing-float landing-float-star">✦</div>
+    </div>
+
+    <header class="landing-header">
+        <div class="landing-container landing-header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">📅</div>
+                <span>ChronoSynapse</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="landing-main">
+        <div class="landing-container landing-hero-grid">
+            <div class="landing-hero-left">
+                <div class="landing-badge">
+                    <span class="landing-badge-icon">✦</span>
+                    SMART SCHEDULING
+                </div>
+
+                <h1 class="landing-headline">
+                    Smarter <span class="gradient-text">Schedules.</span><br>
+                    Stronger <span class="gradient-text">Schools.</span>
+                </h1>
+
+                <p class="landing-subtext">
+                    ChronoSynapse generates conflict-free timetables in seconds,
+                    saving hours of manual work and bringing perfect harmony to your school.
+                </p>
+
+                <div class="landing-cta-row">
+                    <a href="signup.html" class="landing-btn landing-btn-primary">
+                        Sign Up For Free
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                    <a href="dashboard.html" class="landing-btn landing-btn-outline">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        Explore Demo
+                    </a>
+                </div>
+
+                <div class="landing-features">
+                    <div class="landing-feature">
+                        <div class="landing-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6M9 13h4M9 17h2"/></svg>
+                        </div>
+                        <span>Automated<br>Scheduling</span>
+                    </div>
+                    <div class="landing-feature">
+                        <div class="landing-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <span>Conflict-Free<br>Timetables</span>
+                    </div>
+                    <div class="landing-feature">
+                        <div class="landing-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                        </div>
+                        <span>Secure &amp;<br>Reliable</span>
+                    </div>
+                    <div class="landing-feature">
+                        <div class="landing-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                        </div>
+                        <span>Save Time<br>Boost Efficiency</span>
+                    </div>
                 </div>
             </div>
-        </header>
 
-        <div class="landing-content">
-            <h1 class="landing-title">Timetable Titan</h1>
-            <p class="landing-description">
-                Effortlessly generate and manage complex school schedules with the power of AI. 
-                Say goodbye to conflicts and countless hours of manual planning.
-            </p>
-            <div class="landing-buttons">
-                <a href="signup.html" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem;">
-                    Sign Up For Free
-                </a>
-                <a href="dashboard.html" class="btn btn-secondary" style="padding: 1rem 2rem; font-size: 1.1rem;">
-                    Continue as Guest →
-                </a>
+            <div class="landing-hero-right">
+                <div class="tablet-glow"></div>
+                <div class="tablet-device">
+                    <div class="tablet-screen">
+                        <div class="tablet-header">
+                            <h3>Weekly Timetable</h3>
+                            <div class="tablet-controls">
+                                <select class="tablet-select"><option>Class 10-A</option></select>
+                                <select class="tablet-select"><option>Term 1</option></select>
+                                <button class="tablet-generate">✦ Generate</button>
+                            </div>
+                        </div>
+                        <div class="timetable-grid">
+                            <div class="timetable-corner"></div>
+                            <div class="timetable-day">Mon</div>
+                            <div class="timetable-day">Tue</div>
+                            <div class="timetable-day">Wed</div>
+                            <div class="timetable-day">Thu</div>
+                            <div class="timetable-day">Fri</div>
+
+                            <div class="timetable-time">08:00</div>
+                            <div class="timetable-cell"><div class="subject-block subject-math"><strong>Mathematics</strong><small>Mr. Smith · R101</small></div></div>
+                            <div class="timetable-cell"><div class="subject-block subject-history"><strong>History</strong><small>Ms. Lee · R205</small></div></div>
+                            <div class="timetable-cell"><div class="subject-block subject-science"><strong>Science</strong><small>Dr. Patel · Lab 1</small></div></div>
+                            <div class="timetable-cell"><div class="subject-block subject-math"><strong>Mathematics</strong><small>Mr. Smith · R101</small></div></div>
+                            <div class="timetable-cell"><div class="subject-block subject-english"><strong>English</strong><small>Mrs. Brown · R102</small></div></div>
+
+                            <div class="timetable-time">09:00</div>
+                            <div class="timetable-cell"><div class="subject-block subject-english"><strong>English</strong><small>Mrs. Brown · R102</small></div></div>
+                            <div class="timetable-cell"><div class="subject-block subject-math"><strong>Mathematics</strong><small>Mr. Smith · R101</small></div></div>
+                            <div class="timetable-cell"><div class="subject-block subject-computer"><strong>Computer</strong><small>Mr. Chen · Lab 2</small></div></div>
+                            <div class="timetable-cell"><div class="subject-block subject-science"><strong>Science</strong><small>Dr. Patel · Lab 1</small></div></div>
+                            <div class="timetable-cell"><div class="subject-block subject-history"><strong>History</strong><small>Ms. Lee · R205</small></div></div>
+
+                            <div class="timetable-time">10:00</div>
+                            <div class="timetable-cell"><div class="subject-block subject-science"><strong>Science</strong><small>Dr. Patel · Lab 1</small></div></div>
+                            <div class="timetable-cell"><div class="subject-block subject-english"><strong>English</strong><small>Mrs. Brown · R102</small></div></div>
+                            <div class="timetable-cell"><div class="subject-block subject-math"><strong>Mathematics</strong><small>Mr. Smith · R101</small></div></div>
+                            <div class="timetable-cell"><div class="subject-block subject-computer"><strong>Computer</strong><small>Mr. Chen · Lab 2</small></div></div>
+                            <div class="timetable-cell"><div class="subject-block subject-science"><strong>Science</strong><small>Dr. Patel · Lab 1</small></div></div>
+
+                            <div class="timetable-time">11:00</div>
+                            <div class="timetable-cell"><div class="subject-block subject-computer"><strong>Computer</strong><small>Mr. Chen · Lab 2</small></div></div>
+                            <div class="timetable-cell"><div class="subject-block subject-science"><strong>Science</strong><small>Dr. Patel · Lab 1</small></div></div>
+                            <div class="timetable-cell"><div class="subject-block subject-history"><strong>History</strong><small>Ms. Lee · R205</small></div></div>
+                            <div class="timetable-cell"><div class="subject-block subject-english"><strong>English</strong><small>Mrs. Brown · R102</small></div></div>
+                            <div class="timetable-cell"><div class="subject-block subject-math"><strong>Mathematics</strong><small>Mr. Smith · R101</small></div></div>
+                        </div>
+                        <div class="tablet-legend">
+                            <span><i class="legend-dot legend-science"></i> Science</span>
+                            <span><i class="legend-dot legend-math"></i> Mathematics</span>
+                            <span><i class="legend-dot legend-english"></i> Languages</span>
+                            <span><i class="legend-dot legend-computer"></i> Computer</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
+
+    <section class="landing-stats">
+        <div class="landing-container landing-stats-inner">
+            <div class="landing-stat">
+                <div class="landing-stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                </div>
+                <div class="landing-stat-value">90%</div>
+                <div class="landing-stat-label">Time Saved</div>
+            </div>
+            <div class="landing-stat">
+                <div class="landing-stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div class="landing-stat-value">100%</div>
+                <div class="landing-stat-label">Conflict-Free</div>
+            </div>
+            <div class="landing-stat">
+                <div class="landing-stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3"/><path d="M9 9v0M9 12v0M9 15v0"/></svg>
+                </div>
+                <div class="landing-stat-value">500+</div>
+                <div class="landing-stat-label">Schools Trust Us</div>
+            </div>
+            <div class="landing-stat">
+                <div class="landing-stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6M9 13h4"/></svg>
+                </div>
+                <div class="landing-stat-value">Auto</div>
+                <div class="landing-stat-label">Smart Generation</div>
+            </div>
+        </div>
+    </section>
 </body>
 </html>
-

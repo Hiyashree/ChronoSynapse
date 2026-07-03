@@ -1,0 +1,236 @@
+/* ChronoSynapse — Dreamy feminine background effects */
+
+.fx-shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        115deg,
+        transparent 0%,
+        transparent 42%,
+        rgba(255, 192, 220, 0.07) 48%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 192, 220, 0.07) 52%,
+        transparent 58%,
+        transparent 100%
+    );
+    background-size: 250% 100%;
+    animation: fx-shimmer-sweep 7s ease-in-out infinite;
+}
+
+@keyframes fx-shimmer-sweep {
+    0%, 100% { background-position: 120% 0; opacity: 0.6; }
+    50% { background-position: -20% 0; opacity: 1; }
+}
+
+/* Soft bokeh glow orbs */
+.fx-bokeh {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+.fx-bokeh span {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(251, 113, 133, 0.35) 0%, rgba(236, 72, 153, 0.08) 45%, transparent 70%);
+    filter: blur(2px);
+    animation: fx-bokeh-pulse 6s ease-in-out infinite;
+}
+
+.fx-bokeh span:nth-child(1) { width: 180px; height: 180px; top: 8%; left: 12%; animation-delay: 0s; }
+.fx-bokeh span:nth-child(2) { width: 140px; height: 140px; top: 55%; left: 75%; animation-delay: -2s; }
+.fx-bokeh span:nth-child(3) { width: 220px; height: 220px; top: 70%; left: 20%; animation-delay: -4s; }
+.fx-bokeh span:nth-child(4) { width: 100px; height: 100px; top: 25%; left: 65%; animation-delay: -1s; }
+.fx-bokeh span:nth-child(5) { width: 160px; height: 160px; top: 40%; left: 45%; animation-delay: -3s; }
+
+@keyframes fx-bokeh-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.15); opacity: 0.85; }
+}
+
+/* Floating hearts */
+.fx-hearts {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+.fx-hearts span {
+    position: absolute;
+    color: rgba(244, 114, 182, 0.55);
+    text-shadow: 0 0 16px rgba(236, 72, 153, 0.7), 0 0 32px rgba(236, 72, 153, 0.3);
+    animation: fx-heart-rise 14s ease-in-out infinite;
+    user-select: none;
+}
+
+.fx-hearts span:nth-child(1)  { left: 8%;  font-size: 1.4rem; animation-delay: 0s;    animation-duration: 12s; }
+.fx-hearts span:nth-child(2)  { left: 22%; font-size: 1rem;   animation-delay: -3s;   animation-duration: 15s; opacity: 0.7; }
+.fx-hearts span:nth-child(3)  { left: 38%; font-size: 1.6rem; animation-delay: -6s;   animation-duration: 11s; }
+.fx-hearts span:nth-child(4)  { left: 55%; font-size: 0.9rem; animation-delay: -2s;   animation-duration: 16s; opacity: 0.6; }
+.fx-hearts span:nth-child(5)  { left: 68%; font-size: 1.3rem; animation-delay: -8s;   animation-duration: 13s; }
+.fx-hearts span:nth-child(6)  { left: 82%; font-size: 1.1rem; animation-delay: -5s;   animation-duration: 14s; opacity: 0.75; }
+.fx-hearts span:nth-child(7)  { left: 92%; font-size: 1.5rem; animation-delay: -10s;  animation-duration: 12s; }
+.fx-hearts span:nth-child(8)  { left: 48%; font-size: 0.85rem; animation-delay: -12s; animation-duration: 17s; opacity: 0.5; }
+
+@keyframes fx-heart-rise {
+    0% { transform: translateY(110vh) rotate(0deg) scale(0.6); opacity: 0; }
+    8% { opacity: 0.8; }
+    50% { transform: translateY(40vh) rotate(15deg) scale(1); opacity: 0.6; }
+    92% { opacity: 0.7; }
+    100% { transform: translateY(-15vh) rotate(-10deg) scale(0.8); opacity: 0; }
+}
+
+/* Rose petals */
+.fx-petals {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+.fx-petals span {
+    position: absolute;
+    width: 14px;
+    height: 18px;
+    background: linear-gradient(135deg, rgba(251, 182, 206, 0.7), rgba(236, 72, 153, 0.35));
+    border-radius: 50% 50% 50% 0;
+    box-shadow: 0 0 8px rgba(244, 114, 182, 0.4);
+    animation: fx-petal-fall 16s linear infinite;
+}
+
+.fx-petals span:nth-child(1)  { left: 5%;  animation-delay: 0s;    animation-duration: 14s; }
+.fx-petals span:nth-child(2)  { left: 18%; animation-delay: -4s;   animation-duration: 18s; width: 10px; height: 14px; }
+.fx-petals span:nth-child(3)  { left: 32%; animation-delay: -8s;   animation-duration: 15s; }
+.fx-petals span:nth-child(4)  { left: 50%; animation-delay: -2s;   animation-duration: 20s; width: 16px; height: 20px; }
+.fx-petals span:nth-child(5)  { left: 65%; animation-delay: -11s; animation-duration: 13s; }
+.fx-petals span:nth-child(6)  { left: 78%; animation-delay: -6s;   animation-duration: 17s; width: 11px; height: 15px; }
+.fx-petals span:nth-child(7)  { left: 88%; animation-delay: -14s; animation-duration: 16s; }
+.fx-petals span:nth-child(8)  { left: 42%; animation-delay: -9s;   animation-duration: 19s; width: 12px; height: 16px; }
+.fx-petals span:nth-child(9)  { left: 58%; animation-delay: -3s;   animation-duration: 15s; }
+.fx-petals span:nth-child(10) { left: 25%; animation-delay: -16s;  animation-duration: 21s; width: 9px; height: 12px; }
+
+@keyframes fx-petal-fall {
+    0% { transform: translateY(-10vh) rotate(0deg) translateX(0); opacity: 0; }
+    10% { opacity: 0.85; }
+    100% { transform: translateY(110vh) rotate(720deg) translateX(80px); opacity: 0; }
+}
+
+/* Butterflies */
+.fx-butterflies {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+.fx-butterfly {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    opacity: 0.55;
+    animation: fx-butterfly-float 20s ease-in-out infinite;
+}
+
+.fx-butterfly::before,
+.fx-butterfly::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    width: 14px;
+    height: 18px;
+    border-radius: 50% 50% 45% 45%;
+    background: linear-gradient(135deg, rgba(244, 114, 182, 0.6), rgba(167, 139, 250, 0.4));
+    box-shadow: 0 0 12px rgba(236, 72, 153, 0.5);
+}
+
+.fx-butterfly::before {
+    left: 0;
+    transform: rotate(-20deg);
+    animation: fx-wing-left 0.4s ease-in-out infinite alternate;
+}
+
+.fx-butterfly::after {
+    right: 0;
+    transform: rotate(20deg);
+    animation: fx-wing-right 0.4s ease-in-out infinite alternate;
+}
+
+.fx-butterfly:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; animation-duration: 18s; }
+.fx-butterfly:nth-child(2) { top: 60%; left: 85%; animation-delay: -7s; animation-duration: 22s; transform: scale(0.8); }
+.fx-butterfly:nth-child(3) { top: 35%; left: 70%; animation-delay: -12s; animation-duration: 25s; transform: scale(1.2); opacity: 0.4; }
+
+@keyframes fx-wing-left {
+    from { transform: rotate(-20deg) scaleX(1); }
+    to { transform: rotate(-35deg) scaleX(0.85); }
+}
+
+@keyframes fx-wing-right {
+    from { transform: rotate(20deg) scaleX(1); }
+    to { transform: rotate(35deg) scaleX(0.85); }
+}
+
+@keyframes fx-butterfly-float {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(60px, -40px); }
+    50% { transform: translate(120px, 20px); }
+    75% { transform: translate(40px, 50px); }
+}
+
+/* Glitter stars */
+.fx-glitter {
+    position: absolute;
+    inset: 0;
+}
+
+.fx-glitter span {
+    position: absolute;
+    color: rgba(255, 228, 240, 0.9);
+    text-shadow: 0 0 10px rgba(244, 114, 182, 0.9), 0 0 20px rgba(236, 72, 153, 0.5);
+    animation: fx-glitter-twinkle 3s ease-in-out infinite;
+}
+
+.fx-glitter span:nth-child(1)  { top: 10%; left: 15%; font-size: 1rem; animation-delay: 0s; }
+.fx-glitter span:nth-child(2)  { top: 22%; left: 78%; font-size: 0.75rem; animation-delay: 0.5s; }
+.fx-glitter span:nth-child(3)  { top: 45%; left: 8%;  font-size: 1.2rem; animation-delay: 1s; }
+.fx-glitter span:nth-child(4)  { top: 68%; left: 90%; font-size: 0.9rem; animation-delay: 1.5s; }
+.fx-glitter span:nth-child(5)  { top: 80%; left: 35%; font-size: 1.1rem; animation-delay: 0.3s; }
+.fx-glitter span:nth-child(6)  { top: 30%; left: 50%; font-size: 0.7rem; animation-delay: 2s; }
+.fx-glitter span:nth-child(7)  { top: 55%; left: 62%; font-size: 1rem; animation-delay: 0.8s; }
+.fx-glitter span:nth-child(8)  { top: 15%; left: 42%; font-size: 0.85rem; animation-delay: 1.2s; }
+.fx-glitter span:nth-child(9)  { top: 75%; left: 58%; font-size: 1.15rem; animation-delay: 1.8s; }
+.fx-glitter span:nth-child(10) { top: 40%; left: 28%; font-size: 0.8rem; animation-delay: 2.2s; }
+
+@keyframes fx-glitter-twinkle {
+    0%, 100% { opacity: 0.15; transform: scale(0.8) rotate(0deg); }
+    50% { opacity: 1; transform: scale(1.3) rotate(180deg); }
+}
+
+/* Pink mist at bottom */
+.fx-mist {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(to top, rgba(236, 72, 153, 0.12) 0%, rgba(168, 85, 247, 0.06) 40%, transparent 100%);
+    animation: fx-mist-breathe 8s ease-in-out infinite;
+}
+
+@keyframes fx-mist-breathe {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fx-shimmer, .fx-bokeh span, .fx-hearts span, .fx-petals span,
+    .fx-butterfly, .fx-glitter span, .fx-mist {
+        animation: none !important;
+        opacity: 0.3;
+    }
+}
+
+@media (max-width: 768px) {
+    .fx-hearts span:nth-child(n+6),
+    .fx-petals span:nth-child(n+7),
+    .fx-butterfly:nth-child(3) {
+        display: none;
+    }
+}

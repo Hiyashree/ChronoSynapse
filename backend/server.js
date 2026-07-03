@@ -5,9 +5,23 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const isProduction = process.env.NODE_ENV === 'production';
 
+const allowedOrigins = (process.env.FRONTEND_URL || '')
+    .split(',')
+    .map(origin => origin.trim())
+    .filter(Boolean);
 
-app.use(cors());
+app.use(cors({
+    origin(origin, callback) {
+        if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+            callback(null, true);
+            return;
+        }
+        callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -59,14 +73,20 @@ app.use((req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
+    if (isProduction) {
+        console.log('🌍 Production mode enabled');
+    }
     console.log(`📁 Serving static files from: ${path.join(__dirname, '../public')}`);
     console.log(`🔗 Test endpoint: http://localhost:${PORT}/api/test`);
-    console.log(`\n⚠️  Make sure:`);
-    console.log(`   1. MySQL is running`);
-    console.log(`   2. Database 'timetable_titan' exists`);
-    console.log(`   3. Schema is imported`);
-    console.log(`   4. .env file is configured\n`);
+    console.log(`\n💾 Database: ${process.env.DB_TYPE || (process.env.DATABASE_URL ? 'postgres' : 'sqlite')}`);
+    if ((process.env.DB_TYPE || 'sqlite') === 'sqlite' && !process.env.DATABASE_URL) {
+        console.log(`   SQLite file: ${process.env.DB_PATH || './data/chronosynapse.db'}\n`);
+    } else if (process.env.DATABASE_URL) {
+        console.log('   Using DATABASE_URL (cloud database)\n');
+    } else {
+        console.log(`   MySQL host: ${process.env.DB_HOST || 'localhost'}\n`);
+    }
 });
 

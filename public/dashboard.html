@@ -1,63 +1,218 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Schools - Timetable Titan</title>
+
+    <title>Your Schools - ChronoSynapse</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/fx.css">
+
 </head>
-<body>
-    <header>
+
+<body class="app-page">
+
+    <div class="app-bg">
+        <div class="fx-shimmer"></div>
+        <div class="fx-mist"></div>
+        <div class="fx-bokeh"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="fx-hearts"><span>♥</span><span>♥</span><span>♥</span><span>♥</span><span>♥</span><span>♥</span><span>♥</span><span>♥</span></div>
+        <div class="fx-petals"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="fx-butterflies"><span class="fx-butterfly"></span><span class="fx-butterfly"></span><span class="fx-butterfly"></span></div>
+        <div class="fx-glitter"><span>✦</span><span>✨</span><span>♡</span><span>✦</span><span>✨</span><span>✦</span><span>✨</span><span>♡</span><span>✦</span><span>✨</span></div>
+        <div class="app-waves"></div>
+
+        <div class="app-beams"></div>
+
+        <div class="app-ripples"><span></span><span></span><span></span></div>
+
+        <div class="app-streams">
+
+            <div class="app-stream"></div><div class="app-stream"></div><div class="app-stream"></div>
+
+            <div class="app-stream"></div><div class="app-stream"></div>
+
+        </div>
+
+        <div class="app-synapse">
+
+            <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+
+                <line class="app-synapse-line" x1="100" y1="200" x2="350" y2="350"/>
+
+                <line class="app-synapse-line" x1="350" y1="350" x2="600" y2="180"/>
+
+                <line class="app-synapse-line" x1="600" y1="180" x2="850" y2="400"/>
+
+                <line class="app-synapse-line" x1="850" y1="400" x2="1100" y2="250"/>
+
+                <line class="app-synapse-line" x1="200" y1="500" x2="450" y2="600"/>
+
+                <line class="app-synapse-line" x1="450" y1="600" x2="700" y2="450"/>
+
+                <line class="app-synapse-line" x1="700" y1="450" x2="950" y2="650"/>
+
+                <line class="app-synapse-line" x1="350" y1="350" x2="450" y2="600"/>
+
+                <line class="app-synapse-line" x1="600" y1="180" x2="700" y2="450"/>
+
+                <line class="app-synapse-line" x1="100" y1="200" x2="200" y2="500"/>
+
+                <circle class="app-synapse-node" cx="100" cy="200" r="4"/>
+
+                <circle class="app-synapse-node" cx="350" cy="350" r="4"/>
+
+                <circle class="app-synapse-node" cx="600" cy="180" r="4"/>
+
+                <circle class="app-synapse-node" cx="850" cy="400" r="4"/>
+
+                <circle class="app-synapse-node" cx="1100" cy="250" r="4"/>
+
+                <circle class="app-synapse-node" cx="200" cy="500" r="4"/>
+
+                <circle class="app-synapse-node" cx="450" cy="600" r="4"/>
+
+                <circle class="app-synapse-node" cx="700" cy="450" r="4"/>
+
+                <circle class="app-synapse-node" cx="950" cy="650" r="4"/>
+
+            </svg>
+
+        </div>
+
+        <div class="app-time-fragments">
+
+            <span>08:00</span><span>Math · R101</span><span>Wed 10:00</span><span>Science</span>
+
+            <span>09:30</span><span>History</span><span>Mon 14:00</span><span>English · R205</span>
+
+        </div>
+
+    </div>
+
+
+
+    <header class="app-header">
+
         <a href="index.html" class="logo">
+
             <div class="logo-icon">📅</div>
-            <span>Timetable Titan</span>
+
+            <span>ChronoSynapse</span>
+
         </a>
+
         <div class="user-avatar" onclick="logout()" title="Logout"></div>
+
     </header>
 
-    <main>
+
+
+    <main class="app-main">
+
+        <div class="app-hero-strip">
+
+            <span class="app-hero-badge">✦ YOUR SCHOOLS</span>
+
+        </div>
+
         <h1 class="page-title">Your Schools</h1>
+
         <p class="page-subtitle">Manage your schools and generate timetables.</p>
 
+
+
         <div class="card" style="margin-bottom: 2rem;">
+
             <h2 class="card-title">Create a New School</h2>
-            <p style="color: var(--text-gray); margin-bottom: 1.5rem;">
+
+            <p class="card-desc">
                 Give your new school a name to get started. Sample data will be added automatically.
             </p>
-            <form id="createSchoolForm" style="display: flex; gap: 1rem;">
+
+            <form id="createSchoolForm" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+
                 <input 
+
                     type="text" 
-                    id="schoolName" 
+
+                    id="newSchoolName" 
+
                     class="form-input" 
+
                     placeholder="E.g., Northwood High or My First School"
-                    style="flex: 1;"
+
+                    style="flex: 1; min-width: 200px;"
+
                     required
+
                 >
+
                 <button type="submit" class="btn btn-primary">
+
                     ➕ Create School
+
                 </button>
+
             </form>
+
         </div>
+
+
 
         <div class="card">
+
             <h2 class="card-title">Your Schools</h2>
+
             <div id="schoolsContainer" class="schools-grid">
+
                 <div class="spinner"></div>
+
             </div>
+
         </div>
+
     </main>
 
+
+
     <script src="js/common.js"></script>
+
     <script src="js/auth.js"></script>
+
     <script src="js/schools.js"></script>
+
     <script>
+
         function logout() {
+
             if (confirm('Are you sure you want to logout?')) {
+
                 clearAuth();
+
                 window.location.href = 'index.html';
+
             }
+
         }
+
     </script>
+
 </body>
+
 </html>
+
 

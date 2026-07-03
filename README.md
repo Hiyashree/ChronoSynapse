@@ -1,6 +1,31 @@
-# Timetable Titan
+# ChronoSynapse
 
-A comprehensive timetable generator application for schools that automatically creates conflict-free schedules using AI-powered algorithms.
+School class routine management with dynamic, conflict-free timetable generation.
+
+## Quick start (local)
+
+```bash
+cd backend
+copy .env.example .env
+npm install
+npm start
+```
+
+Open http://localhost:3000
+
+## Deploy online (GitHub + Render + cloud SQL)
+
+See **[DEPLOY.md](./DEPLOY.md)** for the full guide to:
+- Push to GitHub
+- Deploy on Render
+- Use PostgreSQL in the cloud (not on your computer)
+
+## Tech stack
+
+- **Frontend:** HTML, CSS, JavaScript
+- **Backend:** Node.js, Express
+- **Database:** SQLite (local) · PostgreSQL (Render) · MySQL (optional)
+
 
 ## Features
 
