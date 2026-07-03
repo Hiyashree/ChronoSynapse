@@ -197,22 +197,42 @@ copy .env.example .env    # Windows
 
 ---
 
-## Part 5 — GitHub Pages (optional, not recommended alone)
+## Part 5 — GitHub Pages → redirect to Render (recommended)
 
-GitHub Pages only hosts **static HTML/CSS/JS**. It cannot run Node.js or connect to a database by itself.
+GitHub Pages **cannot** run your Node backend or database. Instead, this repo includes a **redirect** so your GitHub link opens the same live app on Render.
 
-If you still want GitHub Pages for the frontend only:
+| GitHub URL | Redirects to |
+|------------|----------------|
+| `https://hiyashree.github.io/ChronoSynapse/` | `https://chronosynapse.onrender.com/` |
+| `https://hiyashree.github.io/ChronoSynapse/public/dashboard.html` | `https://chronosynapse.onrender.com/dashboard` |
+| Any other path under the repo | Same path on Render (via `404.html`) |
 
-1. Deploy backend on Render (Part 2).
-2. Add this to every HTML page `<head>`:
+### Enable GitHub Pages (one-time)
+
+1. Push the latest code to GitHub (includes `index.html`, `404.html`, `redirect-to-render.js`).
+2. Open your repo on GitHub → **Settings** → **Pages**.
+3. Under **Build and deployment**:
+   - **Source:** Deploy from a branch
+   - **Branch:** `main`
+   - **Folder:** `/ (root)`
+4. Click **Save**.
+5. Wait 1–2 minutes, then open:  
+   `https://hiyashree.github.io/ChronoSynapse/`  
+   It should redirect to `https://chronosynapse.onrender.com`.
+
+### Change the Render URL later
+
+Edit the meta tag in `index.html` and `404.html`:
 
 ```html
-<meta name="api-base-url" content="https://chronosynapse.onrender.com">
+<meta name="chronosynapse-render-url" content="https://your-new-app.onrender.com">
 ```
 
-3. Enable GitHub Pages from the `/public` folder.
+Or edit `DEFAULT_RENDER_URL` in `redirect-to-render.js`.
 
-**Easier:** skip GitHub Pages and use only your Render URL — the app already serves the frontend from the same server.
+### Pin the Render link on GitHub
+
+Repo → **About** (gear icon) → **Website** → paste `https://chronosynapse.onrender.com`
 
 ---
 

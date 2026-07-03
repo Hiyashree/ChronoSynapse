@@ -15,10 +15,10 @@ Open http://localhost:3000
 
 ## Deploy online (GitHub + Render + cloud SQL)
 
-See **[DEPLOY.md](./DEPLOY.md)** for the full guide to:
-- Push to GitHub
-- Deploy on Render
-- Use PostgreSQL in the cloud (not on your computer)
+See **[DEPLOY.md](./DEPLOY.md)** for the full guide.
+
+**Live app:** https://chronosynapse.onrender.com  
+**GitHub Pages** (redirects to Render): https://hiyashree.github.io/ChronoSynapse/
 
 ## Tech stack
 
