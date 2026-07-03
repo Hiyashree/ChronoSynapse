@@ -27,7 +27,7 @@ const comparePassword = async (password, hash) => {
     return await bcrypt.compare(password, hash);
 };
 
-// Middleware to authenticate requests
+// Middleware to authenticate requests (required)
 const authenticate = (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1] || req.cookies?.token;
     
@@ -44,11 +44,26 @@ const authenticate = (req, res, next) => {
     next();
 };
 
+// Middleware to attach userId from JWT when present (optional)
+const optionalAuthenticate = (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1] || req.cookies?.token;
+
+    if (token) {
+        const decoded = verifyToken(token);
+        if (decoded?.userId) {
+            req.userId = decoded.userId;
+        }
+    }
+
+    next();
+};
+
 module.exports = {
     generateToken,
     verifyToken,
     hashPassword,
     comparePassword,
-    authenticate
+    authenticate,
+    optionalAuthenticate
 };
 

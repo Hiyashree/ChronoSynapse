@@ -1,21 +1,63 @@
 const pool = require('../utils/db');
 
+async function userExists(userId) {
+    if (!userId) return false;
+    const [users] = await pool.execute(
+        'SELECT user_id FROM users WHERE user_id = ?',
+        [userId]
+    );
+    return users.length > 0;
+}
+
+async function createGuestUser() {
+    const suffix = Date.now();
+    const [guestUser] = await pool.execute(
+        'INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)',
+        [`guest_${suffix}`, `guest_${suffix}@guest.com`, 'guest']
+    );
+    console.log('Guest user created with ID:', guestUser.insertId);
+    return guestUser.insertId;
+}
+
+/** Resolve a valid user id — never return an id missing from users table. */
+async function resolveOrCreateUserId(req) {
+    if (req.userId && await userExists(req.userId)) {
+        return req.userId;
+    }
+
+    const candidateId =
+        req.body?.userId ||
+        req.body?.guestId ||
+        req.query?.userId ||
+        req.query?.guestId;
+
+    if (candidateId && await userExists(candidateId)) {
+        return Number(candidateId);
+    }
+
+    if (candidateId) {
+        console.log(`Stale userId ${candidateId} not in database — creating guest user`);
+    } else {
+        console.log('Creating guest user...');
+    }
+
+    return createGuestUser();
+}
+
 // Get all schools for a user
 const getSchools = async (req, res) => {
     try {
-        let userId = req.userId || req.query.userId; // Support guest mode
+        let userId = req.userId || req.query.userId || req.query.guestId;
 
         console.log('Get schools - userId:', userId, 'query:', req.query);
 
-        // For guest mode, use a special guest user ID from query
-        if (!userId) {
-            userId = req.query.guestId || null;
-        }
-
-        // If no userId provided (no authenticated user and no guestId), return empty array
-        // No automatic school creation or guest user lookup
         if (!userId) {
             console.log('No userId provided, returning empty array');
+            return res.json([]);
+        }
+
+        if (!(await userExists(userId))) {
+            console.log(`User ${userId} not found, returning empty array`);
             return res.json([]);
         }
 
@@ -40,7 +82,11 @@ const getSchools = async (req, res) => {
 const getSchool = async (req, res) => {
     try {
         const { schoolId } = req.params;
-        const userId = req.userId || req.query.userId;
+        const userId = req.userId || req.query.userId || req.query.guestId;
+
+        if (!userId || !(await userExists(userId))) {
+            return res.status(404).json({ error: 'School not found' });
+        }
 
         const [schools] = await pool.execute(
             'SELECT * FROM schools WHERE school_id = ? AND user_id = ?',
@@ -63,23 +109,12 @@ const createSchool = async (req, res) => {
     try {
         console.log('Create school request:', req.body);
         const { schoolName } = req.body;
-        let userId = req.userId || req.body.userId || req.body.guestId;
 
         if (!schoolName) {
             return res.status(400).json({ error: 'School name is required' });
         }
 
-        // For guest mode, create a temporary user or use guest ID
-        if (!userId) {
-            console.log('Creating guest user...');
-            // Create a guest user entry
-            const [guestUser] = await pool.execute(
-                'INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)',
-                [`guest_${Date.now()}`, `guest_${Date.now()}@guest.com`, 'guest']
-            );
-            userId = guestUser.insertId;
-            console.log('Guest user created with ID:', userId);
-        }
+        const userId = await resolveOrCreateUserId(req);
 
         console.log('Creating school with userId:', userId, 'name:', schoolName);
         const [result] = await pool.execute(
@@ -129,7 +164,11 @@ const createSchool = async (req, res) => {
 const deleteSchool = async (req, res) => {
     try {
         const { schoolId } = req.params;
-        const userId = req.userId || req.query.userId;
+        let userId = req.userId || req.query.userId || req.query.guestId;
+
+        if (!userId || !(await userExists(userId))) {
+            return res.status(404).json({ error: 'School not found' });
+        }
 
         const [result] = await pool.execute(
             'DELETE FROM schools WHERE school_id = ? AND user_id = ?',

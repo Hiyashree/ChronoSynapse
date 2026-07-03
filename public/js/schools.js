@@ -2,16 +2,36 @@
 
 let currentUserId = null;
 
+function persistUserId(userId) {
+    if (!userId) return;
+    currentUserId = String(userId);
+    if (getAuthToken()) {
+        localStorage.setItem('userId', currentUserId);
+    } else {
+        localStorage.setItem('guestId', currentUserId);
+        localStorage.removeItem('userId');
+    }
+}
+
 // Initialize dashboard
 async function initDashboard() {
-    // Get user ID (authenticated or guest)
     const userId = getUserId();
-    if (!userId) {
-        // For guest mode, we'll create a temporary user on the backend
-        // Just use a placeholder for now - backend will handle it
-        currentUserId = null;
-    } else {
+    const token = getAuthToken();
+
+    if (token) {
+        try {
+            const user = await apiRequest('/auth/me');
+            if (user?.user_id) {
+                persistUserId(user.user_id);
+            }
+        } catch {
+            clearAuth();
+            currentUserId = null;
+        }
+    } else if (userId) {
         currentUserId = userId;
+    } else {
+        currentUserId = null;
     }
 
     await loadSchools();
@@ -29,11 +49,15 @@ async function loadSchools() {
         console.log('Loaded schools:', schools);
         
         // If we got schools but don't have a userId, store it from the first school
-        // This happens when a guest creates their first school
-        if (schools.length > 0 && !currentUserId && schools[0].userId) {
-            currentUserId = schools[0].userId;
-            localStorage.setItem('guestId', currentUserId);
-            console.log('Stored userId from loaded schools:', currentUserId);
+        if (schools.length > 0 && schools[0].userId) {
+            persistUserId(schools[0].userId);
+        }
+
+        // Stale local userId (e.g. from localhost) — clear so createSchool gets a fresh guest
+        if (schools.length === 0 && currentUserId && !getAuthToken()) {
+            localStorage.removeItem('guestId');
+            localStorage.removeItem('userId');
+            currentUserId = null;
         }
         
         displaySchools(schools);
@@ -93,11 +117,9 @@ async function createSchool() {
             body: JSON.stringify(data)
         });
 
-        // If we got a userId from the response (guest mode), store it
-        if (school.userId && !currentUserId) {
-            currentUserId = school.userId;
-            localStorage.setItem('guestId', currentUserId);
-            console.log('Stored guest userId:', currentUserId);
+        // Always sync userId from server (handles stale ids + new guest users)
+        if (school.userId) {
+            persistUserId(school.userId);
         }
 
         showAlert('School created successfully!', 'success');
